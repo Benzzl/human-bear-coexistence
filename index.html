@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人熊冲突与共存研究 | Human-Bear Conflict and Coexistence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a3d2e;
+            --secondary: #2d5f4a;
+            --accent: #6b9d7c;
+            --light: #e8f3ed;
+            --cream: #fdfbf7;
+            --text: #1a1a1a;
+            --text-light: #5a5a5a;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Sans 3', 'Noto Serif SC', sans-serif;
+            color: var(--text);
+            background: var(--cream);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            z-index: 1000;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 1rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a3d2e 0%, #2d5f4a 50%, #4a7c5f 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(107, 157, 124, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(45, 95, 74, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(26, 61, 46, 0.3) 0%, transparent 50%);
+            animation: gradientFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes gradientFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .hero .subtitle {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            font-style: italic;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+
+        .hero .tagline {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 400;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.9s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: scrollDot 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        @keyframes scrollDot {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(30px); opacity: 0; }
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 8rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        /* Introduction Section */
+        .introduction {
+            background: white;
+            position: relative;
+        }
+
+        .intro-content {
+            background: var(--light);
+            padding: 4rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 60px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .intro-content p {
+            font-size: 1.15rem;
+            line-height: 2;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .intro-content em {
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .note {
+            margin-top: 2.5rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Articles Grid */
+        .articles {
+            background: var(--cream);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .article-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .article-card:hover::before {
+            opacity: 0.03;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.08);
+        }
+
+        .article-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-tag {
+            font-size: 0.85rem;
+            color: var(--accent);
+            background: var(--light);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .article-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .article-title {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-source {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light);
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap 0.3s ease;
+        }
+
+        .read-more:hover {
+            gap: 1rem;
+        }
+
+        .read-more::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .read-more:hover::after {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content p {
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+            margin: 2rem auto;
+        }
+
+        .footer-note {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1.5rem;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .intro-content {
+                padding: 2rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .section-header {
+                margin-bottom: 3rem;
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <a href="#" class="logo">人熊共存</a>
+            <ul>
+                <li><a href="#home">首页</a></li>
+                <li><a href="#introduction">简介</a></li>
+                <li><a href="#articles">研究</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <h1>人熊冲突与共存</h1>
+            <p class="subtitle">Human-Bear Conflict and Coexistence</p>
+            <p class="tagline">探索人与自然和谐共生之道 | Exploring harmonious coexistence between humans and nature</p>
+        </div>
+        <div class="scroll-indicator"></div>
+    </header>
+
+    <!-- Introduction Section -->
+    <section class="introduction" id="introduction">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">关于本站</h2>
+                <p class="section-subtitle">About This Research</p>
+            </div>
+            
+            <div class="intro-content fade-in">
+                <p>
+                    欢迎访问"人熊冲突与共存"研究网站。本站建立初衷在于希望人们注意并重视人与动物之间的生存和利益冲突，
+                    其中人与熊之间是典型的例子。我们希望人与动物可以和谐共处，共同发展。
+                </p>
+                <p>
+                    <em>Welcome to the "Human-Bear Conflict and Coexistence" research website. This platform aims to raise awareness 
+                    about survival and interest conflicts between humans and animals, with human-bear interactions serving as a prime example. 
+                    We aspire for harmonious coexistence and mutual development between humans and wildlife.</em>
+                </p>
+                
+                <div class="note">
+                    <p>
+                        <strong>研究说明：</strong>本站文章将翻译转述中国的人熊冲突与共存事件，目的希望全世界可以共同关注。
+                        所有翻译转述内容均标明出处。
+                    </p>
+                    <p>
+                        <em><strong>Research Note:</strong> Articles on this site translate and relay human-bear conflict and coexistence 
+                        events in China, with the hope of bringing global attention to these issues. All translations clearly indicate their sources.</em>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="articles" id="articles">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">研究文章</h2>
+                <p class="section-subtitle">Research Articles & Case Studies</p>
+            </div>
+
+            <div class="articles-grid">
+                <!-- Article 1 -->
+                <article class="article-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=800&h=600&fit=crop" 
+                         alt="Brown bear in Yushu, Qinghai" 
+                         class="article-image"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 800 600\'%3E%3Crect fill=\'%234a7c5f\' width=\'800\' height=\'600\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'32\' font-family=\'sans-serif\'%3EBrown Bear - Qinghai%3C/text%3E%3C/svg%3E'">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-tag">案例研究</span>
+                            <span class="article-date">2023-08-20</span>
+                        </div>
+                        <h3 class="article-title">Bear-Human Conflicts in Yushu, Qinghai</h3>
+                        <p class="article-excerpt">
+                            青海玉树发生棕熊袭击事件，两头牦牛被咬死。经过4小时的"人熊博弈"，棕熊最终离开。
+                            当地警方发布预警，提醒牧民提高安全意识。
+                        </p>
+                        <p class="article-excerpt">
+                            <em>Brown bear attacked and killed two yaks in Yushu, Qinghai. After a 4-hour standoff, 
+                            the bear finally left. Local police issued warnings to alert herders.</em>
+                        </p>
+                        <p class="article-source">来源 Source: 红星新闻 (Red Star News)</p>
+                    </div>
+                </article>
+
+                <!-- Article 2 -->
+                <article class="article-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1534177616072-ef7dc120449d?w=800&h=600&fit=crop" 
+                         alt="Black bear in forest" 
+                         class="article-image"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 800 600\'%3E%3Crect fill=\'%232d5f4a\' width=\'800\' height=\'600\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'32\' font-family=\'sans-serif\'%3EBlack Bear - Sichuan%3C/text%3E%3C/svg%3E'">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-tag">突发事件</span>
+                            <span class="article-date">2023-05-17</span>
+                        </div>
+                        <h3 class="article-title">Black Bear Attack in Jiangyou, Sichuan</h3>
+                        <p class="article-excerpt">
+                            四川江油发生黑熊袭击事件，造成3人死亡。搜救队伍携猎犬进山搜索，专家指出黑熊的存在反映了生态环境保护的成效，
+                            但环保的最终目的是保护人民。
+                        </p>
+                        <p class="article-excerpt">
+                            <em>A black bear attack in Jiangyou, Sichuan resulted in 3 deaths. Search teams with hunting dogs were deployed. 
+                            Experts noted that black bear presence reflects ecological protection success, but the ultimate goal is protecting people.</em>
+                        </p>
+                        <p class="article-source">来源 Source: 红星新闻 (Red Star News)</p>
+                    </div>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="article-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&h=600&fit=crop" 
+                         alt="Chinese policy and wildlife" 
+                         class="article-image"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 800 600\'%3E%3Crect fill=\'%236b9d7c\' width=\'800\' height=\'600\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'32\' font-family=\'sans-serif\'%3EPolicy & Prevention%3C/text%3E%3C/svg%3E'">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-tag">政策研究</span>
+                            <span class="article-date">2023-08-30</span>
+                        </div>
+                        <h3 class="article-title">How Does China Address Human-Bear Conflicts?</h3>
+                        <p class="article-excerpt">
+                            中国《民法典》第251条规定野生动物资源归国家所有，国家对个人损失进行补偿。青海省启动"人熊冲突预警与防范技术"科研项目。
+                            2012-2017年间，玉树州发生20起棕熊袭击事件，造成5死6残11伤。调查显示，现有防熊方法效果不佳。
+                        </p>
+                        <p class="article-excerpt">
+                            <em>China's Civil Code Article 251 states that wildlife resources are state-owned, with government compensation for individual losses. 
+                            Qinghai Province launched a "Human-Bear Conflict Early Warning and Prevention Technology" research project. 
+                            From 2012-2017, Yushu Prefecture recorded 20 brown bear attacks causing 5 deaths, 6 disabilities, and 11 injuries.</em>
+                        </p>
+                        <p class="article-source">作者 Author: Zhuolin Zhong 钟卓霖<br>
+                        数据来源 Data Source: 玉树藏族自治州人-藏棕熊冲突调查与解决对策；青海加大科研力度寻求"人熊冲突"最优解</p>
+                    </div>
+                </article>
+
+                <!-- Article 4 -->
+                <article class="article-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=800&h=600&fit=crop" 
+                         alt="Bear safety guidelines" 
+                         class="article-image"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 800 600\'%3E%3Crect fill=\'%231a3d2e\' width=\'800\' height=\'600\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'32\' font-family=\'sans-serif\'%3ESafety Guidelines%3C/text%3E%3C/svg%3E'">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-tag">安全指南</span>
+                            <span class="article-date">2024-05-08</span>
+                        </div>
+                        <h3 class="article-title">Face to the Bears: Safety Guidelines</h3>
+                        <p class="article-excerpt">
+                            在青海、西藏、云南等地区容易发生人兽冲突，熊是典型例子。了解熊的特征至关重要：棕熊领地意识强，
+                            嗅觉敏锐但视力差，有冬眠习性。避免冲突的关键方法：保持冷静不要逃跑（熊速度56km/h），
+                            不要接近熊崽，举起双手向熊表明你没有威胁。
+                        </p>
+                        <p class="article-excerpt">
+                            <em>Human-animal conflicts are common in Qinghai, Tibet, and Yunnan, with bears being a prime example. 
+                            Understanding bear characteristics is crucial: strong territorial sense, keen smell but poor vision, hibernation habits. 
+                            Key safety methods: stay calm and don't run (bears reach 56km/h), avoid bear cubs, raise hands to show you're not a threat.</em>
+                        </p>
+                        <p class="article-source">作者 Author: Zhuolin Zhong 钟卓霖</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>人熊冲突与共存研究</h3>
+            <p>Human-Bear Conflict and Coexistence Research</p>
+            <div class="footer-divider"></div>
+            <div class="footer-note">
+                <p>网站创建者与维护者 | Website Creator and Maintainer</p>
+                <p><strong>Zhuolin Zhong 钟卓霖</strong></p>
+                <p>© 2023-2024 | 致力于促进人与自然和谐共生</p>
+                <p><em>Dedicated to promoting harmonious coexistence between humans and nature</em></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
